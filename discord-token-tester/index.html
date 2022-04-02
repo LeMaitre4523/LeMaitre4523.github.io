@@ -1,1 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" name="viewport" />
+  <meta name="referrer" content="no-referrer" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Discord Token Tester" />
+  <meta property="og:title" content="Discord Token Tester - check if the token is valid " />
+  <meta property="og:description" content="Discord Token Tester - check if the token is valid " />
+  <meta property="og:image" content="https://discord.com/assets/ee7c382d9257652a88c8f7b7f22a994d.png" />
+  <link rel="icon" href="/assets/images/icon.ico" />
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <title>Discord Token Tester</title>
+</head>
+
+<body>
+
+  <div class="wrapper-1f5byN">
+    <div style="opacity: 1; transform: scale(1) translateY(0px) translateZ(0px);">
+      <div>
+        <div class="authBoxExpanded-AN2aH1 authBox-1HR6Ha theme-dark">
+          <div class="centeringWrapper-dGnJPQ">
+            <div style="flex: 1 1 auto;" class="flex-2S1XBF flex-3BkGQD horizontal-112GEH horizontal-1Piu5- flex-3BkGQD directionRow-2Iu2A9 justifyStart-2Mwniq alignCenter-14kD11 noWrap-hBpHBz">
+              <div class="mainLoginContainer-wHmAjP" id="container-login">
+                <div class="header-6M5OpB">
+                  <h3 class="title-3FQ39e marginBottom8-emkd0_ base-21yXnu size24-17l95E">Discord Token Tester</h3>
+                  <div class="colorHeaderSecondary-g5teka size16-rrJ6ag">Check if the token is valid</div>
+                </div>
+                <div class="block-3uVSn4 marginTop20-2T8ZJx">
+                  <div class="marginBottom20-315RVT">
+                    <h5 class="colorStandard-21JIj7 size14-3fJ-ot h5-2RwDNl title-3hptVQ defaultMarginh5-3Jxf6f" id="label-input">Token</h5>
+                    <div class="input-2g-os5 input-2yCVqe">
+                      <div class="inputWrapper-1YNMmM inputWrapper-3ESIDR">
+                        <input class="inputDefault-3FGxgL input-2g-os5 inputField-2RZxdl" id="token-input" type="text" placeholder="Bot or User token" aria-label="token" autocomplete="off" maxlength="999" spellcheck="false" aria-labelledby="uid_5">
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <button id='checktoken-btn' class="marginBottom8-emkd0_ button-1cRKG6 button-f2h6uQ lookFilled-yCfaCM colorBrand-I6CyqQ sizeLarge-3mScP9 fullWidth-fJIsjq grow-2sR_-F">
+                    <div class="contents-3ca1mk">Check token</div>
+                  </button>
+                  <div class="marginTop4-2JFJJI"><span class="needAccount-MrvMN7">By LeMaitre4523 | CSS and HTML by Discord | <strong>This page is not affiliated with Discord</strong></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var user_info,startTimetamps,ws = null;
+    var loading_cube = '<span class="spinner-2RT7ZC"><span class="inner-26JK4f"><span class="wanderingCubesItem-3Us-UG"></span><span class="wanderingCubesItem-3Us-UG"></span></span></span></center>'
+
+    document.getElementById("checktoken-btn").addEventListener('click', function() { checkToken(); })
+
+    function checkToken() {
+      let token = document.getElementById('token-input').value;
+      if(!token) {
+        document.getElementById('label-input').classList.add("error-3EBD81");
+        document.getElementById('label-input').innerHTML = 'Token <span class="errorMessage-1kMqS5"><span class="errorSeparator-f__rwE">-</span>This field is required</span>';
+        return;
+      }
+      console.log("Connecting to the gateway...");
+      startTimetamps = Date.now();
+      ws = new WebSocket("wss://gateway.discord.gg/?v=9&encoding=json"); //?encoding=etf&v=9&compress=zlib-stream
+      document.getElementById("container-login").innerHTML = loading_cube;
+      document.getElementById("container-login").style.alignItems = "center";
+      ws.onopen = () => {
+        var connection = { "op": 2, "d": { "token": token, "intents": 513, "properties": { "$os": 'linux', "$browser": 'chrome', "$device": 'chrome' }}}
+        var ms = Date.now() - startTimetamps
+        console.log("Connected in " + ms + "ms. URL : " + ws.url);
+        ws.send(JSON.stringify(connection));
+      }
+      ws.onmessage = function incoming({ data }) {
+        let payload = JSON.parse(data)
+        const { t, event, op, d } = payload;
+        switch (t) {
+          case "READY":
+            if(t === "READY"){
+              console.log("Receving READY event");
+              user_info = d.user;
+              console.log("Show informations")
+              showUserInfo();
+              console.log("Closing connection...");
+              ws.close();
+            }
+          break
+        }
+      }
+
+      ws.onclose = function(err) {
+        console.log("Connection closed.");
+        if(err.code === 4004) {
+          console.log("Reason : Authentication failed (4004)")
+          showTokenError();
+          return;
+        }
+      }
+    }
+
+    function showUserInfo() {
+      var avatarURL = null;
+      if(user_info.avatar != null) {
+        avatarURL = `https://cdn.discordapp.com/avatars/${user_info.id}/${user_info.avatar}.webp?size=128`;
+      } else {
+        avatarURL = "https://discord.com/assets/6f26ddd1bf59740c536d2274bb834a05.png"
+      }
+      document.getElementById("container-login").innerHTML = `<div class="header-6M5OpB"><h3 class="title-3FQ39e marginBottom8-emkd0_ base-21yXnu size24-17l95E">Discord Token Tester | This token is valid !</h3><div class="colorHeaderSecondary-g5teka size16-rrJ6ag">${user_info.username}#${user_info.discriminator} (${user_info.id})</div></div><div class="qrAvatar-3AAugH wrapper-1VLyxH" style="width: 120px; height: 120px;" role="img" aria-hidden="false"><div class="avatarStack-3vfSFa"><img src="${avatarURL}" alt=" " class="avatar-b5OQ1N" aria-hidden="true"></div></div>`
+    } 
+    
+    function showTokenError() {
+      document.getElementById("container-login").innerHTML = `<div class="header-6M5OpB"><h3 class="title-3FQ39e marginBottom8-emkd0_ base-21yXnu size24-17l95E">Discord Token Tester</h3><div class="colorHeaderSecondary-g5teka size16-rrJ6ag">Check if the token is valid</div></div><div class="block-3uVSn4 marginTop20-2T8ZJx"><div class="marginBottom20-315RVT"><h5 class="colorStandard-21JIj7 size14-3fJ-ot h5-2RwDNl title-3hptVQ defaultMarginh5-3Jxf6f" id="label-input">Token</h5><div class="input-2g-os5 input-2yCVqe"><div class="inputWrapper-1YNMmM inputWrapper-3ESIDR"><input class="inputDefault-3FGxgL input-2g-os5 inputField-2RZxdl" id="token-input" type="text" placeholder="Bot or User token" aria-label="token" autocomplete="off" maxlength="999" spellcheck="false" aria-labelledby="uid_5"></div></div></div><div><button id='checktoken-btn' class="marginBottom8-emkd0_ button-1cRKG6 button-f2h6uQ lookFilled-yCfaCM colorBrand-I6CyqQ sizeLarge-3mScP9 fullWidth-fJIsjq grow-2sR_-F"><div class="contents-3ca1mk">Check token</div></button><div class="marginTop4-2JFJJI"><span class="needAccount-MrvMN7">By LeMaitre4523 | CSS and HTML by Discord | <strong>This page is not affiliated with Discord</strong></span></div></div>`
+      document.getElementById('label-input').classList.add("error-3EBD81");
+      document.getElementById('label-input').innerHTML = 'Token <span class="errorMessage-1kMqS5"><span class="errorSeparator-f__rwE">-</span>This token is invalid</span>';
+      document.getElementById("checktoken-btn").addEventListener('click', function() { checkToken(); })
+    }
+    /*
+    //Not functional due to blocking of requests from Discord 
+    var url = "https://discord.com/api/oauth2/applications/@me"
+      fetch(url, {
+          mode: 'cors',
+          method: 'GET',
+          headers: { 'Authorization': 'Bot ' + token },
+      })
+      .then(res => res.text())
+      .then(json => {
+        console.log(json)
+      })*/
+
+  </script>
+  <style>
+    html,
+    body {
+      margin: 0px;
+      padding: 0px;
+      font-family: sans-serif;
+      background: url(assets/images/background.png) no-repeat;
+      background-color: #303136;
+      background-size: cover;
+      color: #8e9297;
+      line-height: 10px;
+    }
+
+    
+  </style>
+</body>
+
+</html>
