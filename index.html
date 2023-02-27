@@ -1,12 +1,90 @@
 <!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Github Page | LeMaitre4523</title>
-  </head>
-  <body id="body">
-    <h4>LeMaitre4523</h4>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - LeMaitre4523</title>
+</head>
+<body>
+    <div class="context">
+        <h1>Mes projets</h1>
+        <div class="list">
+            <div class="project" onclick="javascript:window.location.href='/discord-token-tester'">
+                <h6>Discord Token Tester</h6>
+                <p>Vous permet de savoir si un token Discord est valide</p>
+            </div>
+            <div class="project" onclick="javascript:window.location.href='/tdre'">
+                <h6>TDRE</h6>
+                <p>Une interface simple qui vous permet d'explorer vos données TikTok depuis un rapport de données</p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Exo:400,700');
+
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+
+        body {
+            font-family: 'Exo', sans-serif;
+            background: #ffffff;
+        }
+
+
+        .list {
+            display: block;
+            position: absolute;
+            transform: translate(-50%);
+            left: 50%;
+        }
+
+        .project {
+            box-sizing: border-box;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            background-color: #5d5d66;
+            text-align: center;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+            width: 430px;
+            height: 230px;
+        }
+
+        .project p {
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .project:hover {
+            opacity: 0.9;
+        }
+
+        @media (min-width: 30rem) {
+            .list {
+                display: flex;
+                /*flex-direction: row;*/
+            }
+        }
+
+    .context {
+        width: 100%;
+        position: absolute;
+        top:30vh;
+        z-index: 99;
+        
+    }
+
+    .context h1{
+        text-align: center;
+        color: black;
+        font-size: 50px;
+    }
+    </style>
+</body>
 </html>
